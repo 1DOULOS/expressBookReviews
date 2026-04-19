@@ -1,56 +1,56 @@
 const axios = require('axios');
 
-const BASE_URL = 'http://localhost:5000';
+//Task 1: Get all Books - using Promise callbacks
+let getData = () => {
+  return new Promise((resolve, reject) => {
+    axios.get('http://localhost:5000/')
+      .then(response => {
+        resolve(response.data);
+      })
+      .catch(error => {
+        reject(error);
+      });
+  });
+};
 
-// Task 10.1 — Get all books using async/await
-const getAllBooks = async () => {
+getData().then(books => {
+  console.log("All Books:", JSON.stringify(books, null, 4));
+}).catch(err => {
+  console.log(err.message);
+});
+
+//Task 2: Search by ISBN - using async-await with Axios
+const getByISBN = async (isbn) => {
   try {
-    const response = await axios.get(`${BASE_URL}/`);
-    console.log("All Books:");
-    console.log(JSON.stringify(response.data, null, 2));
+    const response = await axios.get(`http://localhost:5000/isbn/${isbn}`);
+    console.log("Book based on ISBN:", JSON.stringify(response.data, null, 4));
   } catch (error) {
-    console.error("Error fetching all books:", error.message);
+    console.log(error.message);
   }
 };
 
-// Task 10.2 — Get book by ISBN using Promise callbacks
-const getBookByISBN = (isbn) => {
-  axios.get(`${BASE_URL}/isbn/${isbn}`)
-    .then(response => {
-      console.log(`\nBook with ISBN ${isbn}:`);
-      console.log(JSON.stringify(response.data, null, 2));
-    })
-    .catch(error => {
-      console.error(`Error fetching book by ISBN ${isbn}:`, error.message);
-    });
-};
+getByISBN(1);
 
-// Task 10.3 — Get books by author using async/await
-const getBooksByAuthor = async (author) => {
+//Task 3: Search by Author - using async-await with Axios
+const getByAuthor = async (author) => {
   try {
-    const response = await axios.get(`${BASE_URL}/author/${encodeURIComponent(author)}`);
-    console.log(`\nBooks by author "${author}":`);
-    console.log(JSON.stringify(response.data, null, 2));
+    const response = await axios.get(`http://localhost:5000/author/${author}`);
+    console.log("Books by Author:", JSON.stringify(response.data, null, 4));
   } catch (error) {
-    console.error(`Error fetching books by author "${author}":`, error.message);
+    console.log(error.message);
   }
 };
 
-// Task 10.4 — Get books by title using async/await
-const getBooksByTitle = async (title) => {
+getByAuthor("Chinua Achebe");
+
+//Task 4: Search by Title - using async-await with Axios
+const getByTitle = async (title) => {
   try {
-    const response = await axios.get(`${BASE_URL}/title/${encodeURIComponent(title)}`);
-    console.log(`\nBooks with title "${title}":`);
-    console.log(JSON.stringify(response.data, null, 2));
+    const response = await axios.get(`http://localhost:5000/title/${title}`);
+    console.log("Books by Title:", JSON.stringify(response.data, null, 4));
   } catch (error) {
-    console.error(`Error fetching books by title "${title}":`, error.message);
+    console.log(error.message);
   }
 };
 
-// Run all four methods
-(async () => {
-  await getAllBooks();
-  getBookByISBN(1);
-  await getBooksByAuthor("Jane Austen");
-  await getBooksByTitle("Things Fall Apart");
-})();
+getByTitle("Things Fall Apart");

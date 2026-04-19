@@ -24,10 +24,10 @@ regd_users.post('/login', (req, res) => {
     return res.status(401).json({ message: "Invalid username or password" });
   }
 
-  const token = jwt.sign({ username }, 'access', { expiresIn: '1h' });
-  req.session.authorization = { accessToken: token, username };
+  const accessToken = jwt.sign({ username }, 'access', { expiresIn: '1h' });
+  req.session.authorization = { accessToken, username };
 
-  return res.status(200).json({ message: "Customer successfully logged in", token });
+  return res.status(200).json({ message: "Customer successfully logged in", accessToken });
 });
 
 regd_users.put('/auth/review/:isbn', (req, res) => {
@@ -49,23 +49,6 @@ regd_users.put('/auth/review/:isbn', (req, res) => {
     message: "Review successfully added/modified",
     reviews: books[isbn].reviews
   });
-});
-
-regd_users.delete('/auth/review/:isbn', (req, res) => {
-  const isbn = req.params.isbn;
-  const username = req.session.authorization.username;
-
-  if (!books[isbn]) {
-    return res.status(404).json({ message: "Book not found" });
-  }
-
-  if (!books[isbn].reviews[username]) {
-    return res.status(404).json({ message: "No review found for this user" });
-  }
-
-  delete books[isbn].reviews[username];
-
-  return res.status(200).send(`Review for ISBN ${isbn} posted by user ${username} deleted.`);
 });
 
 module.exports.authenticated = isValid;

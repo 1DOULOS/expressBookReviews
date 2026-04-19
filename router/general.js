@@ -1,4 +1,5 @@
 const express = require('express');
+const jwt = require('jsonwebtoken');
 let books = require('./booksdb.js');
 let isValid = require('./auth_users.js').isValid;
 let users = require('./auth_users.js').users;
@@ -75,6 +76,36 @@ public_users.get('/review/:isbn', (req, res) => {
   }
 
   return res.status(200).json(books[isbn].reviews);
+});
+
+public_users.delete('/review/:isbn', (req, res) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) {
+    return res.status(403).json({ message: "User not logged in" });
+  }
+
+  jwt.verify(token, 'access', (err, user) => {
+    if (err) {
+      return res.status(403).json({ message: "User not authenticated" });
+    }
+
+    const isbn = req.params.isbn;
+    const username = user.username;
+
+    if (!books[isbn]) {
+      return res.status(404).json({ message: "Book not found" });
+    }
+
+    if (!books[isbn].reviews[username]) {
+      return res.status(404).json({ message: "No review found for this user" });
+    }
+
+    delete books[isbn].reviews[username];
+
+    return res.status(200).json({ message: `Review for ISBN ${isbn} posted by user ${username} deleted.` });
+  });
 });
 
 module.exports.general = public_users;
