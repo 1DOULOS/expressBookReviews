@@ -27,7 +27,7 @@ regd_users.post('/login', (req, res) => {
   const token = jwt.sign({ username }, 'access', { expiresIn: '1h' });
   req.session.authorization = { accessToken: token, username };
 
-  return res.status(200).json({ message: "User successfully logged in", token });
+  return res.status(200).json({ message: "Customer successfully logged in", token });
 });
 
 regd_users.put('/auth/review/:isbn', (req, res) => {
@@ -65,10 +65,7 @@ regd_users.delete('/auth/review/:isbn', (req, res) => {
 
   delete books[isbn].reviews[username];
 
-  return res.status(200).json({
-    message: "Review successfully deleted",
-    reviews: books[isbn].reviews
-  });
+  return res.status(200).send(`Review for ISBN ${isbn} posted by user ${username} deleted.`);
 });
 
 module.exports.authenticated = isValid;
