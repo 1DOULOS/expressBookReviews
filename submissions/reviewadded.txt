@@ -1,0 +1,6 @@
+Command:
+curl -s -b cookies.txt -X PUT \
+  "http://localhost:5000/customer/auth/review/1?review=This+is+an+amazing+book+about+African+culture"
+
+Output:
+{"message":"Review successfully added/modified","reviews":{"testuser":"This is an amazing book about African culture"}}
