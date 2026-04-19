@@ -1,0 +1,24 @@
+Command:
+curl -s https://api.github.com/repos/1DOULOS/expressBookReviews | node -e "
+const data = [];
+process.stdin.on('data', d => data.push(d));
+process.stdin.on('end', () => {
+  const json = JSON.parse(data.join(''));
+  console.log(JSON.stringify({
+    full_name: json.full_name,
+    fork: json.fork,
+    parent: json.parent ? json.parent.full_name : null,
+    source: json.source ? json.source.full_name : null,
+    html_url: json.html_url
+  }, null, 2));
+});
+"
+
+Output:
+{
+  "full_name": "1DOULOS/expressBookReviews",
+  "fork": true,
+  "parent": "ibm-developer-skills-network/expressBookReviews",
+  "source": "ibm-developer-skills-network/expressBookReviews",
+  "html_url": "https://github.com/1DOULOS/expressBookReviews"
+}
